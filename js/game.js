@@ -2538,6 +2538,7 @@ function interval(func, wait, times){
 var sprite = new Runner('.interstitial-wrapper');
 var x_data = [];
 var y_data = [];
+var results = [];
 var iteration = 0;
 
 
@@ -2545,13 +2546,13 @@ interval(function(){
   //console.log(sprite);
   if (finished == false) {
   if (sprite.horizon.obstacles.length > 0 && sprite.crashed == false) {
-  x_data.push([sprite.tRex.xPos, sprite.tRex.yPos, sprite.horizon.obstacles[0].xPos, sprite.horizon.obstacles[0].yPos])
+  x_data.push([sprite.currentSpeed, -sprite.tRex.yPos + 93, sprite.horizon.obstacles[0].xPos + 1, sprite.horizon.obstacles[0].xPos + sprite.horizon.obstacles[0].typeConfig.width * sprite.horizon.obstacles[0].size - 1, -(sprite.horizon.obstacles[0].yPos + 1) + 139, -(sprite.horizon.obstacles[0].yPos + sprite.horizon.obstacles[0].typeConfig.height - 1) + 139])
   y_data.push(sprite.tRex.jumping)
   console.log(iteration);
   iteration ++;}}
   else {
     if (sprite.horizon.obstacles.length > 0 && sprite.crashed == false) {
-    console.log(myNetwork.activate([sprite.tRex.xPos, sprite.tRex.yPos,  sprite.horizon.obstacles[0].xPos, sprite.horizon.obstacles[0].yPos]))
+    results.push(myNetwork.activate([sprite.currentSpeed, -sprite.tRex.yPos + 93, sprite.horizon.obstacles[0].xPos + 1, sprite.horizon.obstacles[0].xPos + sprite.horizon.obstacles[0].typeConfig.width * sprite.horizon.obstacles[0].size - 1, -(sprite.horizon.obstacles[0].yPos + 1) + 139, -(sprite.horizon.obstacles[0].yPos + sprite.horizon.obstacles[0].typeConfig.height - 1) + 139])[0])
   }}
 }, 300, 1000
 )
