@@ -1,4 +1,4 @@
-## t-rex-runner
+## ML T-Rex Runner
 
 ![chrome offline game cast](assets/screenshot.gif)
 
