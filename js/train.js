@@ -4,43 +4,46 @@ var Neuron = synaptic.Neuron,
     Trainer = synaptic.Trainer,
     Architect = synaptic.Architect;
 
+
+
 var finished = false;
 
-    var inputLayer = new Layer(4);
-    var hiddenLayer = new Layer(5);
-    var outputLayer = new Layer(1);
+var inputLayer = new Layer(2);
+var hiddenLayer1 = new Layer(3);
+var outputLayer = new Layer(1);
 
-    inputLayer.project(hiddenLayer);
+inputLayer.project(hiddenLayer1, Layer.connectionType.ALL_TO_ALL);
+hiddenLayer1.project(outputLayer, Layer.connectionType.ALL_TO_ALL);
 
-    hiddenLayer.project(outputLayer);
+var myNetwork = new Network({
+    input: inputLayer,
+    hidden: [hiddenLayer1],
+    output: outputLayer
+});
 
-    var myNetwork = new Network({
-        input: inputLayer,
-        hidden: [hiddenLayer],
-        output: outputLayer
-    });
+train = function () {
 
-begin = function() {
+//cleanYData(y_data)
 
-  y_data.forEach(function(part,index,arr) {
-    if (arr[index] == true) {
-      arr[index]= 1;
-    }
-
-    else {
-      arr[index] = 0;
-    }
-  })
-
-  // train the network
-  var learningRate = .3;
-  for (var i = 0; i < 20000; i++)
-  {
-    for (var x = 0; x < window.x_data.length; x++)
-    {
-      myNetwork.activate(window.x_data[x]);
-      myNetwork.propagate(learningRate, [y_data[x]]);
-}
+function createValues() {
+  var x = [];
+  for (var i = 0; i < window.x_data.length; i += 1) {
+    x.push({input: window.x_data[i], output: [window.y_data[i]]})
   }
-  finished = true;
+  return x;
+}
+
+
+
+  var trainingSet = createValues();
+  console.log(trainingSet);
+  var trainer = new Trainer(myNetwork);
+  trainer.train(trainingSet, {
+      rate: .3,
+      iterations: 2000,
+      error: .1,
+      shuffle: true,
+      log: 1,
+      cost: Trainer.cost.CROSS_ENTROPY
+  });
 }

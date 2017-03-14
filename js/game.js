@@ -2309,7 +2309,7 @@ HorizonLine.prototype = {
  * Horizon background class.
  * @param {HTMLCanvasElement} canvas
  * @param {Object} spritePos Sprite positioning.
- * @param {Object} dimensions Canvas dimensions.
+ * @param {Object} dimensions Canvas diensions.
  * @param {number} gapCoefficient
  * @constructor
  */
@@ -2540,19 +2540,68 @@ var x_data = [];
 var y_data = [];
 var results = [];
 var iteration = 0;
+var finished = false;
 
+
+function cleanYData(y_data) {
+  var trueCheck = true;
+  for (var i = 0; i < y_data.length; i++) {
+    if (y_data[i] === 1 && trueCheck) {
+      trueCheck = false;
+    }
+    else if (y_data[i] === 0 && !trueCheck) {
+        trueCheck = true;
+      }
+    else if (y_data[i] === 1 && !trueCheck) {
+        y_data[i] = 0;
+  }
+}
+return y_data;
+
+}
+
+function countJumps(y_data) {
+  var count = 0;
+  for (var i = 0; i < y_data.length; i ++) {
+    if (y_data[i] === true) {
+      count += 1;
+    }
+  }
+  return count;
+}
+//-sprite.tRex.yPos + 93, removed this because y change is a by product of jumping
 
 interval(function(){
   //console.log(sprite);
   if (finished == false) {
-  if (sprite.horizon.obstacles.length > 0 && sprite.crashed == false) {
-  x_data.push([sprite.currentSpeed, -sprite.tRex.yPos + 93, sprite.horizon.obstacles[0].xPos + 1, sprite.horizon.obstacles[0].xPos + sprite.horizon.obstacles[0].typeConfig.width * sprite.horizon.obstacles[0].size - 1, -(sprite.horizon.obstacles[0].yPos + 1) + 139, -(sprite.horizon.obstacles[0].yPos + sprite.horizon.obstacles[0].typeConfig.height - 1) + 139])
-  y_data.push(sprite.tRex.jumping)
-  console.log(iteration);
-  iteration ++;}}
-  else {
     if (sprite.horizon.obstacles.length > 0 && sprite.crashed == false) {
-    results.push(myNetwork.activate([sprite.currentSpeed, -sprite.tRex.yPos + 93, sprite.horizon.obstacles[0].xPos + 1, sprite.horizon.obstacles[0].xPos + sprite.horizon.obstacles[0].typeConfig.width * sprite.horizon.obstacles[0].size - 1, -(sprite.horizon.obstacles[0].yPos + 1) + 139, -(sprite.horizon.obstacles[0].yPos + sprite.horizon.obstacles[0].typeConfig.height - 1) + 139])[0])
-  }}
-}, 300, 1000
-)
+      x_data.push([Math.round(sprite.currentSpeed*100)/100, sprite.horizon.obstacles[0].xPos - 24])
+      y_data.push(0);
+      console.log(iteration);
+      iteration ++;}
+      }
+    }, 600, 5000)
+
+    document.body.onkeyup = function(e){
+        if(e.keyCode == 32){
+          if (sprite.horizon.obstacles.length > 0 && sprite.crashed == false) {
+            x_data.push([Math.round(sprite.currentSpeed*100)/100, sprite.horizon.obstacles[0].xPos - 24])
+            y_data.push(1);
+
+        }
+        }
+    }
+
+    function activate() {
+      interval(function(){
+        if (sprite.horizon.obstacles.length > 0 && sprite.crashed == false) {
+        var x = myNetwork.activate([Math.round(sprite.currentSpeed*100)/100, sprite.horizon.obstacles[0].xPos - 24]);
+        if (x > 0.4) {
+          console.log("Jump nigga");
+        }
+        console.log(x);
+      }}, 400, 5000)
+    }
+
+
+    console.log("Finished"); //need to fix the location of this piece of code
